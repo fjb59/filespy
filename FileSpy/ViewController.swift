@@ -56,7 +56,10 @@ class ViewController: NSViewController {
     didSet {
       infoTextView.string = ""
       saveInfoButton.isEnabled = false
-
+      if selectedItem == nil
+        {
+          return
+        }
       guard let selectedUrl = selectedItem else {
         return
       }
@@ -123,7 +126,8 @@ extension ViewController {
         // 2
         do {
           // 3
-          let attributes = try fileManager.attributesOfItem(atPath: url.path)
+            let thispath = url.relativePath
+            let attributes = try fileManager.attributesOfItem(atPath: thispath)
           var report: [String] = ["\(url.path)", ""]
 
           // 4
@@ -224,13 +228,16 @@ extension ViewController: NSTableViewDelegate {
     return nil
   }
 
-  func tableViewSelectionDidChange(_ notification: Notification) {
+   
+    func tableViewSelectionDidChange(_ notification: Notification) {
     if tableView.selectedRow < 0 {
       selectedItem = nil
       return
     }
-
-    selectedItem = filesList[tableView.selectedRow]
+        let selectedthing = filesList[tableView.selectedRow].path.components(separatedBy: "//")[1]
+        
+      
+    selectedItem = URL(string: "/"+selectedthing)
   }
 
 }
